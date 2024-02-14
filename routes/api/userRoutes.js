@@ -1,14 +1,14 @@
 // This file specifies the end points for the various user-related CRUD operations. The logic for these operations is defined in controllers/userController.js
 const router = require('express').Router();
 const {
-  getAllUsers,
-  getSingleUser,
-  createUser,
-  updateUser,
-  deleteUser,
-  addFriend,
-  removeFriend,
-} = require('../../controllers/userController');
+    getAllUsers,
+    getSingleUser,
+    createUser,
+    updateUser,
+    deleteUser,
+    addFriend,
+    removeFriend,
+  } = require('../../controllers/userController');
 
 // /api/users
 router
