@@ -1,3 +1,5 @@
+const mongoose = require('mongoose');
+
 const usernames = [
     'DrPhil', 'KingCharles', 'GenghisKhan', 'JeanLucPicard', 'MrSnuffaluphagus', 'MisterRogers',
     'SherlockHolmes', 'AlbusDumbledore', 'HannibalLecter', 'DocOck', 'JamesBond', 'MissMoneypenny',
@@ -71,7 +73,7 @@ const thoughts = [
     "Everyone smiles in the same language.",
     "A good motto to live by: 'Always try not to get killed.'",
     "Life is not measured by the number of breaths we take, but by the moments that take our breath away.",
-    "People say, 'I'm going to sleep now,' as if it were nothing. But it's really a bizarre activity. 'For the next several hours, while the sun is gone, I'm going to become unconscious, temporarily losing command over everything I know and understand. When the sun returns, I will resume my life.’ Next time you see someone sleeping, make believe you're in a science fiction movie. And whisper, 'The creature is regenerating itself.'"
+    "'One thing leads to another'? Not always. Sometimes one thing leads to the same thing. Ask an addict."
   ];
   
   
@@ -81,19 +83,152 @@ const thoughts = [
   // Gets a random username
   const getRandomUsername = () =>
     getRandomArrItem(usernames);
-  
-  // Function to generate random thoughts
+
+  // Generate random thoughts
   const getRandomThoughts = (int) => {
     const results = [];
-    for (let i = 0; i < int; i++) {
-      results.push({
-        thoughtText: getRandomArrItem(thoughts),
-      });
+    const usedIndexes = new Set(); // Keep track of used indexes
+    let attempts = 0; // To prevent infinite loop in case int is larger than thoughts.length
+    while (results.length < int && attempts < thoughts.length * 2) {
+        const index = Math.floor(Math.random() * thoughts.length);
+        if (!usedIndexes.has(index)) {
+            const thoughtText = thoughts[index];
+            const newThought = {
+                _id: new mongoose.Types.ObjectId(),
+                thoughtText: thoughtText,
+            };
+            usedIndexes.add(index);
+            results.push(newThought);
+        }
+        attempts++;
     }
     return results;
-  };
+};  
+  // const getRandomThoughts = (int) => {
+  //   const results = [];
+  //   const usedThoughts = new Set(); // Keep track of used thoughts
+
+  //   for (let i = 0; i < int; i++) {
+  //       let newThought;
+  //       let newThoughtText;
+  //       do {
+  //           newThoughtText = getRandomArrItem(thoughts);
+  //           newThought = {
+  //               _id: new mongoose.Types.ObjectId(),
+  //               thoughtText: newThoughtText,
+  //           };
+  //       } while (usedThoughts.has(newThought._id.toString() + newThoughtText)); // Ensure uniqueness based on _id and thoughtText
+
+  //       usedThoughts.add(newThought._id.toString() + newThoughtText);
+  //       results.push(newThought);
+  //   }
+  //   return results;
+  // };
+
+//   const getRandomThoughts = (int) => {
+//     const results = [];
+//     const shuffledThoughts = thoughts.slice().sort(() => Math.random() - 0.5); // Shuffle the thoughts array
+
+//     for (let i = 0; i < int; i++) {
+//         const newThought = {
+//             _id: new mongoose.Types.ObjectId(),
+//             thoughtText: shuffledThoughts[i % shuffledThoughts.length], // Use modulo to loop through shuffled thoughts
+//         };
+
+//         results.push(newThought);
+//     }
+
+//     return results;
+// };
+// const getRandomThoughts = (int) => {
+//   const results = [];
+//   const availableThoughts = thoughts.slice(); // Create a copy of the thoughts array
+
+//   for (let i = 0; i < int; i++) {
+//       const randomIndex = Math.floor(Math.random() * availableThoughts.length); // Generate a random index
+//       const newThought = {
+//           _id: new mongoose.Types.ObjectId(),
+//           thoughtText: availableThoughts[randomIndex],
+//       };
+
+//       results.push(newThought);
+//       availableThoughts.splice(randomIndex, 1); // Remove the selected thought from available thoughts
+//   }
+
+// const getRandomThoughts = (int) => {
+//   const results = [];
+//   const shuffledThoughts = thoughts.slice().sort(() => Math.random() - 0.5); // Shuffle the thoughts array
+
+//   for (let i = 0; i < int; i++) {
+//       const newThought = {
+//           _id: new mongoose.Types.ObjectId(),
+//           thoughtText: shuffledThoughts[i % shuffledThoughts.length], // Cycle through shuffled thoughts
+//       };
+
+//       results.push(newThought);
+//   }
+
+//   return results;
+// };
+
+// const getRandomThoughts = (int) => {
+//   const results = [];
+//   const usedThoughts = new Set(); // Keep track of used thoughts
+
+//   while (results.length < int) {
+//       const newThought = getRandomArrItem(thoughts);
+//       if (!usedThoughts.has(newThought)) {
+//           results.push({
+//               _id: new mongoose.Types.ObjectId(),
+//               thoughtText: newThought,
+//           });
+//           usedThoughts.add(newThought);
+//       }
+//   }
+
+//   return results;
+// };
+
+// const getRandomThoughts = (int) => {
+//   const results = [];
+//   const uniqueThoughts = new Set(); // Keep track of unique thoughts
+
+//   while (uniqueThoughts.size < int) {
+//       const newThought = getRandomArrItem(thoughts);
+//       if (!uniqueThoughts.has(newThought)) {
+//           uniqueThoughts.add(newThought);
+//           results.push({
+//               _id: new mongoose.Types.ObjectId(),
+//               thoughtText: newThought,
+//           });
+//       }
+//   }
+
+//   return results;
+// };
+
+// const getRandomThoughts = (int) => {
+//   const results = [];
+//   const thoughtIndices = Array.from({ length: thoughts.length }, (_, index) => index); // Create an array of indices
+
+//   for (let i = 0; i < int; i++) {
+//       const randomIndex = Math.floor(Math.random() * thoughtIndices.length); // Generate a random index
+//       const thoughtIndex = thoughtIndices[randomIndex];
+//       const newThought = thoughts[thoughtIndex];
+
+//       results.push({
+//           _id: new mongoose.Types.ObjectId(),
+//           thoughtText: newThought,
+//       });
+
+//       thoughtIndices.splice(randomIndex, 1); // Remove the selected index from the pool
+//   }
+
+//   return results;
+// };
+
   
-  // Export the functions for use in seed.js
-  module.exports = { getRandomUsername, getRandomThoughts };
+// Export the functions for use in seed.js
+module.exports = { getRandomUsername, getRandomThoughts };
   
   

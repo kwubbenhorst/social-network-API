@@ -6,7 +6,35 @@ module.exports = {
   // Get all thoughts
   async getAllThoughts(req, res) {
     try {
-      const thoughts = await Thought.find();
+      // const thoughts = await Thought.find()
+      // .populate({
+      //   path: 'username',
+      //   select: 'username',
+      // })
+      // .populate({
+      //   path: 'reactions',
+      //   select: 'reactionBody username createdAt',
+      // });
+      const thoughts = await Thought.find().populate({
+        path: 'reactions',
+        select: 'reactionBody username createdAt',
+      });
+  
+      // Fetch usernames separately
+      const usernames = await User.find({}, 'username');
+  
+      // Map usernames to thoughts
+      const thoughtsWithUsernames = thoughts.map((thought) => {
+        const reactionsWithUsernames = thought.reactions.map((reaction) => {
+          const { username } = usernames.find((user) => user.id === reaction.username);
+          return { ...reaction.toObject(), username };
+        });
+  
+        return {
+          ...thought.toObject(),
+          reactions: reactionsWithUsernames,
+        };
+      });
       res.json(thoughts);
     } catch (err) {
       res.status(500).json(err);
@@ -17,7 +45,14 @@ module.exports = {
   async getThoughtById(req, res) {
     try {
       const thought = await Thought.findOne({ _id: req.params.thoughtId })
-        .populate('reactions');
+      .populate({
+        path: 'username',
+        select: 'username',
+      })
+      .populate({
+        path: 'reactions',
+        select: 'reactionBody username createdAt',
+      });
       
         if (!thought) {
           return res.status(404).json({ message: 'No thought with that ID' });
@@ -31,19 +66,31 @@ module.exports = {
 
   // Create (POST) a new thought
   async createThought(req, res) {
-    try {
-      const thought = await Thought.create(req.body);
-      // Add thought to the associated user's thoughts array field. const user here is being declared but will not be used elsewhere. Its main purpose is to update the user's data.
-      const user = await User.findOneAndUpdate(
-        { _id: req.body.userId },
-        { $addToSet: { thoughts: thought._id } }, //uses the $addToSet operator to add the thought._id to the thoughts array in the user document. This operator includes a check for whether the thought already exists in the array and will only add it if it is not already there.
-        { new: true } // ensures that the updated document is returned, not the pre-updated one.
-      );
-      res.json(thought);
-    } catch (err) {
-      res.status(500).json(err);
+  try {
+    // Check if the user exists
+    const existingUser = await User.findOne({ username: req.body.username });
+
+    if (!existingUser) {
+      return res.status(404).json({ message: 'User not found' });
     }
-  },
+
+    // Create the thought
+    const thought = await Thought.create(req.body);
+
+    // Add thought to the associated user's thoughts array field
+    const updatedUser = await User.findOneAndUpdate(
+      { _id: existingUser._id },
+      { $addToSet: { thoughts: thought._id } },
+      { new: true }
+    );
+
+    res.json(thought);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json(err);
+  }
+},
+
 
   // Update (PUT) a thought document by its _id
   async updateThought(req, res) {

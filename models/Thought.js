@@ -21,8 +21,8 @@ const reactionSchema = new Schema(
     },
     createdAt: { 
       type: Date, 
-      default: Date.now, // sets default value to current timestamp
-      get: (createdAt) => moment(createdAt).format('YYYY-MM-DD HH:mm:ss') //applies a getter method to format the timestamp on query
+      default: () => moment().format('MMM D, YYYY [at] h:mm a'), // sets default value to current formatted timestamp
+      get: (createdAt) => moment(createdAt).format('MMM D, YYYY [at] h:mm a') //applies a getter method to format the timestamp on query
     },
   },
   // setting that specifies how object is serialized to JSON, setting getters to true ensures that any getters, like the one formatting the timestamp, are applied when converting the document to JSON. id: false excludes the _id field from the JSON output
@@ -44,8 +44,8 @@ const thoughtSchema = new Schema(
     },
     createdAt: { 
       type: Date, 
-      default: Date.now, // sets default value to current timestamp
-      get: (createdAt) => moment(createdAt).format('YYYY-MM-DD HH:mm:ss') //applies a getter method to format the timestamp on query
+      default: Date.now, // sets default value to current formatted timestamp
+      get: (createdAt) => moment(createdAt).format('MMM D, YYYY [at] h:mm a') //applies a getter method to format the timestamp on query
     },
     username: {  //the user who created this thought
       type: String, 
