@@ -33,14 +33,16 @@ const seedDatabase = async (callback) => {
 
     // Loop through the usernames array and add thoughts to the thoughts array
     for (let i = 0; i < usernames.length; i++) {
-      const username = usernames[i];
+      const currentUsername = usernames[i];
+      const { username, email } = getRandomUsername(currentUsername);
 
-      const userThoughts = getRandomThoughts(3);
+      const userThoughts = getRandomThoughts(3, currentUsername);
 
       thoughts.push(...userThoughts);
 
       users.push({
-        username: username,
+        username,
+        email,
         thoughts: userThoughts.map(thought => thought._id),
       });
     }

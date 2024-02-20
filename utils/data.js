@@ -80,12 +80,46 @@ const thoughts = [
   // Get a random item given an array
   const getRandomArrItem = (arr) => arr[Math.floor(Math.random() * arr.length)];
   
-  // Gets a random username
-  const getRandomUsername = () =>
-    getRandomArrItem(usernames);
+  // Gets a random username and email
+  const getRandomUsername = (username) => {
+    const emailMap = {
+      'DrPhil': 'drphil@thedrphilshow.com',
+  'KingCharles': 'kingcharles@clarencehouse.co.uk',
+  'GenghisKhan': 'genghiskhan@mongolia.mn',
+  'JeanLucPicard': 'jeanlucpicard@enterprise.com',
+  'MrSnuffaluphagus': 'mrsnuffaluphagus@sesamestreet.com',
+  'MisterRogers': 'misterrogers@theneighbourhood.com',
+  'SherlockHolmes': 'sherlockholmes@221b.co.uk',
+  'AlbusDumbledore': 'albusdumbledore@hogwarts.edu',
+  'HannibalLecter': 'hanniballecter@uffizilibrary.it',
+  'DocOck': 'docock@newyorkcity.com',
+  'JamesBond': 'jamesbond@MI6.co.uk',
+  'MissMoneypenny': 'missmoneypenny@vauxhallcross.co.uk',
+  'FriendlyGiant': 'friendlygiant@cbcyesteryear.ca',
+  'BarenakedLady': 'barenakedlady@bigbang.com',
+  'PeppermintPatty': 'peppermintpatty@schultzville.com',
+  'BarneyRubble': 'barneyrubble@flintstonia.com',
+  'SnidleyWhiplash': 'snidleywhiplash@dorightville.com',
+  'FrodoBaggins': 'frodobaggins@theshire.co.uk',
+  'AnonymousWombat': 'anonymouswombat@googledrive.com',
+  'DiscreteDiva': 'discretediva@shhh.com',
+  'HappyWanderer': 'happywanderer@wanderlust.com',
+  'JuliaChild': 'juliachild@artoffrenchcooking.com',
+  'LittleMermaid': 'littlemermaid@kelpforest.com',
+  'VillainousKitten': 'villainouskitten@hairball.com'
+    };
+    return {
+      username,
+      email: emailMap[username],
+    };
+   };
+  //   = getRandomArrItem(usernames);
+  //   const email = 
+  // }
+  //   getRandomArrItem(usernames);
 
   // Generate random thoughts
-  const getRandomThoughts = (int) => {
+  const getRandomThoughts = (int, username) => {
     const results = [];
     const usedIndexes = new Set(); // Keep track of used indexes
     let attempts = 0; // To prevent infinite loop in case int is larger than thoughts.length
@@ -96,6 +130,7 @@ const thoughts = [
             const newThought = {
                 _id: new mongoose.Types.ObjectId(),
                 thoughtText: thoughtText,
+                username
             };
             usedIndexes.add(index);
             results.push(newThought);

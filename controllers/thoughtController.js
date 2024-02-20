@@ -15,27 +15,28 @@ module.exports = {
       //   path: 'reactions',
       //   select: 'reactionBody username createdAt',
       // });
-      const thoughts = await Thought.find().populate({
-        path: 'reactions',
-        select: 'reactionBody username createdAt',
+      const thoughts = await Thought.find()
+       .populate({
+          path: 'reactions',
+          select: 'reactionBody username createdAt',
       });
-  
+  return res.json(thoughts);
       // Fetch usernames separately
-      const usernames = await User.find({}, 'username');
+      // const usernames = await User.find({}, 'username');
   
-      // Map usernames to thoughts
-      const thoughtsWithUsernames = thoughts.map((thought) => {
-        const reactionsWithUsernames = thought.reactions.map((reaction) => {
-          const { username } = usernames.find((user) => user.id === reaction.username);
-          return { ...reaction.toObject(), username };
-        });
+      // // Map usernames to thoughts
+      // const thoughtsWithUsernames = thoughts.map((thought) => {
+      //   const reactionsWithUsernames = thought.reactions.map((reaction) => {
+      //     const { username } = usernames.find((user) => user.id === reaction.username);
+      //     return { ...reaction.toObject(), username };
+      //   });
   
-        return {
-          ...thought.toObject(),
-          reactions: reactionsWithUsernames,
-        };
-      });
-      res.json(thoughts);
+      //   return {
+      //     ...thought.toObject(),
+      //     reactions: reactionsWithUsernames,
+      //   };
+      // });
+      // res.json(thoughts);
     } catch (err) {
       res.status(500).json(err);
     }

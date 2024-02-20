@@ -21,7 +21,7 @@ const reactionSchema = new Schema(
     },
     createdAt: { 
       type: Date, 
-      default: () => moment().format('MMM D, YYYY [at] h:mm a'), // sets default value to current formatted timestamp
+      default: Date.now, // sets default value to current formatted timestamp
       get: (createdAt) => moment(createdAt).format('MMM D, YYYY [at] h:mm a') //applies a getter method to format the timestamp on query
     },
   },
@@ -31,6 +31,7 @@ const reactionSchema = new Schema(
       getters: true 
     },
     id: false,
+    _id: false
   }
 );
 
@@ -53,6 +54,14 @@ const thoughtSchema = new Schema(
     },
     // like replies, will appear as an array of nested documents created with the reactionSchema (defined above)
     reactions: [reactionSchema],
+},
+// setting that specifies how object is serialized to JSON, setting getters to true ensures that any getters, like the one formatting the timestamp, are applied when converting the document to JSON. id: false excludes the _id field from the JSON output
+{
+  toJSON: {
+    virtuals: true, 
+    getters: true 
+  },
+  id: false,
 });
 
 // Explicit toJSON setting is not needed because Mongoose includes virtual properties by default in the JSON output when calling toJSON() on an object. I opted to define the virtual locally in Thought.js for the specific property rather than applying global virtuals settings because I know the default behaviour will cover it and because the virtual property (reactionCount) is closely tied to the Thought model, calculating the length of the reactions array.  
