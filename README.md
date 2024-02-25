@@ -29,10 +29,7 @@ Clients wishing to use the server database and endpoints need to have node.js in
 ## Usage
 A full walkthrough of the application's functionality is demonstrated in the following video. The demonstration is shown using Insomnia and Studio3T:
 
-
-
-
-
+https://drive.google.com/file/d/14F-yLkn3o3_rlxD4BSp84KkrM-qJ2VvU/view?usp=sharing
 
 ## Credits
 This project was a single-author creation.
