@@ -1,3 +1,7 @@
+// This index.js file is the main entry point for the application.
+// It sets up Express server, connects to the database, and defines middleware.
+// It calls the seedDatabase function to populate the database with initial data and starts the server after seeding is complete.
+
 const express = require('express');
 const db = require('./config/connection');
 const routes = require('./routes');
